@@ -6,8 +6,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.arttt95.apis.api.EnderecoAPI
 import com.arttt95.apis.api.RetrofitHelper
 import com.arttt95.apis.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,12 +41,40 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnConsulta.setOnClickListener {
 
+            CoroutineScope(Dispatchers.IO).launch {
 
+                recuperarEndereco()
+
+            }
 
         }
+
+    }
+
+    private suspend fun recuperarEndereco() {
+
+        val enderecoAPI = retrofit.create( EnderecoAPI::class.java )
+        enderecoAPI.recuperarEndereco()
 
     }
 
 
 
 }
+
+/*
+{
+    "cep": "13013-051",
+    "logradouro": "Rua Regente Feijó",
+    "complemento": "de 352/353 a 870/871",
+    "unidade": "",
+    "bairro": "Centro",
+    "localidade": "Campinas",
+    "uf": "SP",
+    "estado": "São Paulo",
+    "regiao": "Sudeste",
+    "ibge": "3509502",
+    "gia": "2446",
+    "ddd": "19",
+    "siafi": "6291"
+}*/
