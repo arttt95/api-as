@@ -56,12 +56,14 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun recuperarEndereco() {
 
+        val cepInseridoUsuario = "13013051"
+
         var retorno : Response<Endereco>? = null
 
         try {
 
             val enderecoAPI = retrofit.create( EnderecoAPI::class.java )
-            retorno = enderecoAPI.recuperarEndereco()
+            retorno = enderecoAPI.recuperarEndereco(cepInseridoUsuario, "json")
 
         } catch (e: Exception) {
 
@@ -78,8 +80,9 @@ class MainActivity : AppCompatActivity() {
 
                 val rua = endereco?.logradouro
                 val cidade = endereco?.localidade
+                val cep = endereco?.ajustado // Esta sendo adaptado no modelo de obj. Endereco
 
-                Log.i("info_api", "Rua: $rua | Cidade: $cidade")
+                Log.i("info_api", "Rua: $rua | Cidade: $cidade | CEP: $cep")
 
             }
 
