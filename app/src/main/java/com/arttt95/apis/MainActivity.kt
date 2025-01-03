@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.arttt95.apis.api.EnderecoAPI
+import com.arttt95.apis.api.PostagemAPI
 import com.arttt95.apis.api.RetrofitHelper
 import com.arttt95.apis.databinding.ActivityMainBinding
 import com.arttt95.apis.model.Endereco
+import com.arttt95.apis.model.Postagem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +22,10 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private val apiViaVep by lazy {
+        RetrofitHelper.apiViaCep
     }
 
     private val retrofit by lazy {
@@ -46,7 +52,44 @@ class MainActivity : AppCompatActivity() {
 
             CoroutineScope(Dispatchers.IO).launch {
 
-                recuperarEndereco()
+//                recuperarEndereco()
+                recuperarPostagens()
+
+            }
+
+        }
+
+    }
+
+    private suspend fun recuperarPostagens() {
+
+        var retorno : Response<List<Postagem>>? = null
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.recuperarPostagens()
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_place", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val listaPostagens = retorno.body()
+
+                listaPostagens?.forEach { postagem ->
+
+                    val id = postagem.id
+                    val title = postagem.title
+
+                    Log.i("info_place", "Id: $id | Título: $title")
+                }
 
             }
 
@@ -89,8 +132,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
-
 
 }
 
