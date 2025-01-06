@@ -105,7 +105,14 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     binding.textResultado.text = resultado
                     Picasso.get()
-                        .load(url)
+//                        .load(url)
+                        .load(R.drawable.picasso)
+                        .resize(100, 200)
+//                        .centerInside()
+//                        .centerCrop()
+//                        .centerCrop(1)
+                        .placeholder(R.drawable.carregando)
+                        .error(R.drawable.picasso) // Seria carregado alguma img de ERRO
                         .into(binding.imgFoto)
                 }
 
