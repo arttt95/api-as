@@ -57,7 +57,53 @@ class MainActivity : AppCompatActivity() {
 //                recuperarEndereco()
 //                recuperarPostagens()
 //                recuperarPostagemUnica()
-                recuperarComentariosParaPostagem()
+//                recuperarComentariosParaPostagem()
+                recuperarComentariosParaPostagemQuery()
+            }
+
+        }
+
+    }
+
+    private suspend fun recuperarComentariosParaPostagemQuery() {
+
+        var retorno : Response<List<Comentario>>? = null
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.recuperarComentariosParaPostagemQuery(1, "")
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_place", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val listaComentarios = retorno.body()
+
+                var resultado = ""
+
+                listaComentarios?.forEach { comentario ->
+
+                    val idComentario = comentario.id
+                    val email = comentario.email
+
+                    val comentarioResultado = "ID: $idComentario Quem fez: $email\n"
+
+                    resultado += comentarioResultado
+
+                }
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = resultado
+                }
+
             }
 
         }

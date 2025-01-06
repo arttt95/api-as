@@ -5,6 +5,7 @@ import com.arttt95.apis.model.Postagem
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PostagemAPI {
 
@@ -22,6 +23,32 @@ interface PostagemAPI {
     suspend fun recuperarComentariosParaPostagem(
 
         @Path("id") id: Int
+
+    ) : Response<List<Comentario>>
+
+    @GET("comments") // comments?postId={param}&idComentario={param}
+    suspend fun recuperarComentariosParaPostagemQuery(
+
+        @Query("postId") postId: Int,
+        @Query("idComentario") idComentario: String
+
+    ) : Response<List<Comentario>>
+
+    @GET("pesquisa/{marca}/{modelo}") // Path
+    suspend fun pesquisaPath(
+
+        @Path("marca") marca: String,
+        @Path("modelo") modelo: String
+
+    ) : Response<List<Comentario>>
+
+    @GET("pesquisa") // Query
+    // -> pesquisa?marca={param}&modelo={param}
+    // -> pesquisa?marca=&modelo={param}
+    suspend fun pesquisaQuery(
+
+        @Query("marca") marca: String,
+        @Query("modelo") modelo: String
 
     ) : Response<List<Comentario>>
 
