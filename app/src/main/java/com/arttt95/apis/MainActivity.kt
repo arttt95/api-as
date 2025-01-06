@@ -58,7 +58,123 @@ class MainActivity : AppCompatActivity() {
 //                recuperarPostagens()
 //                recuperarPostagemUnica()
 //                recuperarComentariosParaPostagem()
-                recuperarComentariosParaPostagemQuery()
+//                recuperarComentariosParaPostagemQuery()
+//                salvarPostagem()
+                salvarPostagemFormulario()
+            }
+
+        }
+
+    }
+
+    private suspend fun salvarPostagemFormulario() {
+
+        var retorno : Response<Postagem>? = null
+        /*val postagem = Postagem(
+            "Corpo da postagem",
+            0,
+            "Título da Postagem",
+            1090
+
+        )*/ // No FormURLEncoded não será usado essa val e será passado item por item, porque tem que ser "guiado" com nomenclatura no PostagemAPI.kt
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+//            retorno = postagemAPI.salvarPostagemFormulario(postagem)
+            retorno = postagemAPI.salvarPostagemFormulario(
+                1090,
+                0,
+                "Título Postagem",
+                "Descrição da Postagem"
+            )
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_api", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val postagem = retorno.body()
+
+                val id = postagem?.id
+                val titulo = postagem?.title
+                val userId = postagem?.userId
+
+                val resultado = "{${retorno.code()}} ID postagem: $id | Título: $titulo | userId: $userId"
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = resultado
+                }
+
+
+                Log.i("info_api", resultado)
+
+            } else {
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = "Err:  ${retorno.code()}"
+                }
+
+            }
+
+        }
+
+    }
+
+    private suspend fun salvarPostagem() {
+
+        var retorno : Response<Postagem>? = null
+        val postagem = Postagem(
+            "Corpo da postagem",
+            0,
+            "Título da Postagem",
+            1090
+
+        )
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.salvarPostagem(postagem)
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_api", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val postagem = retorno.body()
+
+                val id = postagem?.id
+                val titulo = postagem?.title
+                val userId = postagem?.userId
+
+                val resultado = "{${retorno.code()}} ID postagem: $id | Título: $titulo | userId: $userId"
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = resultado
+                }
+
+
+                Log.i("info_api", resultado)
+
+            } else {
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = "Err:  ${retorno.code()}"
+                }
+
             }
 
         }
