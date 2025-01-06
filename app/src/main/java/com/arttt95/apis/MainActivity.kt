@@ -62,7 +62,56 @@ class MainActivity : AppCompatActivity() {
 //                salvarPostagem()
 //                salvarPostagemFormulario()
 //                atualizarPostagemPut()
-                atualizarPostagemPatch()
+//                atualizarPostagemPatch()
+                removerPostagem()
+            }
+
+        }
+
+    }
+
+    private suspend fun removerPostagem() {
+
+        var retorno : Response<Unit>? = null
+
+        val postagem = Postagem(
+            "Corpo (body: String -> Postagem.kt) da Postagem",
+            -1,
+            null,
+            1090
+        )
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.removerPostagem(1)
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_api", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val resultado = "Code: {${retorno.code()}} | Sucesso ao remover a postagem."
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = resultado
+                }
+
+
+                Log.i("info_api", resultado)
+
+            } else {
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = "Err:  ${retorno.code()}"
+                }
+
             }
 
         }

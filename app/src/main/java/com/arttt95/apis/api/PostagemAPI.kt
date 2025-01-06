@@ -4,6 +4,7 @@ import com.arttt95.apis.model.Comentario
 import com.arttt95.apis.model.Postagem
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -83,5 +84,10 @@ interface PostagemAPI {
         @Path("id") id: Int,
         @Body postagem: Postagem
     ) : Response<Postagem>
+
+    @DELETE("posts/{id}")
+    suspend fun removerPostagem( // Remover Postagem
+        @Path("id") id : Int
+    ) : Response<Unit>
 
 }
