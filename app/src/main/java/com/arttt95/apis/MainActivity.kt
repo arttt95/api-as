@@ -11,11 +11,13 @@ import com.arttt95.apis.api.EnderecoAPI
 import com.arttt95.apis.api.PostagemAPI
 import com.arttt95.apis.api.RetrofitHelper
 import com.arttt95.apis.databinding.ActivityMainBinding
+import com.arttt95.apis.model.Comentario
 import com.arttt95.apis.model.Endereco
 import com.arttt95.apis.model.Postagem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
@@ -53,8 +55,91 @@ class MainActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
 
 //                recuperarEndereco()
-                recuperarPostagens()
+//                recuperarPostagens()
+//                recuperarPostagemUnica()
+                recuperarComentariosParaPostagem()
+            }
 
+        }
+
+    }
+
+    private suspend fun recuperarComentariosParaPostagem() {
+
+        var retorno : Response<List<Comentario>>? = null
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.recuperarComentariosParaPostagem(1)
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_place", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val listaComentarios = retorno.body()
+
+                var resultado = ""
+
+                listaComentarios?.forEach { comentario ->
+
+                    val idComentario = comentario.id
+                    val email = comentario.email
+
+                    val comentarioResultado = "ID: $idComentario Quem fez: $email\n"
+
+                    resultado += comentarioResultado
+
+                }
+
+                withContext(Dispatchers.Main) {
+                    binding.textResultado.text = resultado
+                }
+
+            }
+
+        }
+
+    }
+
+    private suspend fun recuperarPostagemUnica() {
+
+        var retorno : Response<Postagem>? = null
+
+        try {
+
+            val postagemAPI = retrofit.create( PostagemAPI::class.java )
+            retorno = postagemAPI.recuperarPostagemUnica(1)
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.i("info_place", "Err GET -> MainAct.")
+
+        }
+
+        if( retorno != null ) {
+
+            if( retorno.isSuccessful ) {
+
+                val postagem = retorno.body()
+
+                val resultado = "ID: ${postagem?.id} | Title: ${postagem?.title}"
+
+                withContext(Dispatchers.Main) {
+
+                    binding.textResultado.text = resultado
+
+                }
+
+                Log.i("info_place", resultado)
             }
 
         }
